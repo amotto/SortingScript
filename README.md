@@ -13,13 +13,13 @@ For Windows users! I have noticed that Arabic text comes up as gibberish within 
   - Set the variable value as '-Dfile.encoding=UTF8'  (minus the quotes)
   - Click OK on every window
   
-  To create an executable jar file:
+To create an executable jar file:
   - Make sure to have the Java JDK installed
   - Compile SortingScript.java
   - Open a terminal window and go into the directorty with your compiled .class files
   - type into the terminal jar cvfe SortingScript.jar SortingScript \*.class (minus the quotes)
   
-  For Mac users, the jar file will not open unless you right click it and click open (it's a MacOS security thing)
+For Mac users, the jar file will not open unless you right click it and click open (it's a MacOS security thing)
   
 
 Contact Email: amotto@fordham.edu
