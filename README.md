@@ -1,5 +1,5 @@
 # SortingScript
-Java program that can load directories with text files, let you step through them one by one, and copy them to either a benign or extremist folder. 
+Java program that can load directories with text files, lets you step through them one by one, and copy them to either a benign or extremist folder. 
 
 Also, taking suggestions for a better name.
 
