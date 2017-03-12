@@ -14,8 +14,8 @@ public class SortingScript {
 	private JPanel leftPanelSub1 = new JPanel();
 	private JPanel leftPanelSub2 = new JPanel();
 	private JPanel rightPanel = new JPanel(new BorderLayout());
-	private JPanel rightPanelSub1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 6));
-	private JPanel rightPanelSub2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 12));
+	private JPanel rightPanelSub1 = new JPanel();
+	private JPanel rightPanelSub2 = new JPanel();
 	private JButton benign = new JButton("Benign");
 	private JButton extremism = new JButton("Extremism");
 	private JButton forward = new JButton(">");
