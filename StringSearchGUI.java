@@ -72,15 +72,14 @@ public class StringSearchGUI {
 
 		fileBrowser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					if (e.getActionCommand().equals("ApproveSelection")){
-						path = fileBrowser.getSelectedFile();
-						files = path.listFiles();
-						directorySelected = true;
-						boolean readFileSuccess = readFile(files[counter]);
-						if (readFileSuccess)
-							assembleLeftPanelTextArea();
-
-					}
+				if (e.getActionCommand().equals("ApproveSelection")){
+					path = fileBrowser.getSelectedFile();
+					files = path.listFiles();
+					directorySelected = true;
+					boolean readFileSuccess = readFile(files[counter]);
+					if (readFileSuccess)
+						assembleLeftPanelTextArea();
+				}
 			}
     		});
 	}
