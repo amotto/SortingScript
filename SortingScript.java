@@ -92,6 +92,8 @@ public class SortingScript {
 
 	private void assembleLeftPanelTextArea() {
 		leftPanel.removeAll();
+		leftPanelSub1.removeAll();
+		leftPanelSub2.removeAll();
 		assembleTextAreaLeft();
 		JScrollPane scrollPane = new JScrollPane(textAreaLeft);
 		leftPanelSub1.add(scrollPane);
@@ -122,6 +124,9 @@ public class SortingScript {
 	}
 
 	private void assembleRightPanel() {
+		rightPanel.removeAll();
+		rightPanelSub1.removeAll();
+		rightPanelSub2.removeAll();
 		assembleTextAreaRight();
 		JScrollPane scrollPane = new JScrollPane(textAreaRight);
 		rightPanelSub1.add(scrollPane);
