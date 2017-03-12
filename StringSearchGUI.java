@@ -7,7 +7,7 @@ import javax.swing.border.Border;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class StringSearchGUI {
+public class SortingScript {
 
 	private JFrame primaryWindow = new JFrame("SortingScript");
 	private JPanel leftPanel = new JPanel(new BorderLayout());
@@ -38,7 +38,7 @@ public class StringSearchGUI {
 	private int counter = 0;
 
 
-	public StringSearchGUI() {
+	public SortingScript() {
 		Dimension fileBrowserDimension = new Dimension(600, 600);
 
 		try {
@@ -279,7 +279,7 @@ public class StringSearchGUI {
 	}
 
 	public static void main (String [] args){
-		StringSearchGUI s = new StringSearchGUI();
+		SortingScript s = new SortingScript();
 		s.init();
 	}
 }
