@@ -11,8 +11,8 @@ public class SortingScript {
 
 	private JFrame primaryWindow = new JFrame("SortingScript");
 	private JPanel leftPanel = new JPanel(new BorderLayout());
-	private JPanel leftPanelSub1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 6));
-	private JPanel leftPanelSub2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 12));
+	private JPanel leftPanelSub1 = new JPanel();
+	private JPanel leftPanelSub2 = new JPanel();
 	private JPanel rightPanel = new JPanel(new BorderLayout());
 	private JPanel rightPanelSub1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 6));
 	private JPanel rightPanelSub2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 12));
@@ -39,8 +39,6 @@ public class SortingScript {
 
 
 	public SortingScript() {
-		Dimension fileBrowserDimension = new Dimension(600, 600);
-
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
@@ -54,7 +52,7 @@ public class SortingScript {
 		setButtons();
 		primaryWindow.add(leftPanel, BorderLayout.WEST);
 		primaryWindow.add(rightPanel, BorderLayout.EAST);
-		primaryWindow.setResizable(false);
+		primaryWindow.setResizable(true);
 		primaryWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
@@ -105,9 +103,7 @@ public class SortingScript {
 	}
 
 	private void assembleTextAreaLeft(){
-		Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
 		textAreaLeft.setText("");
-		textAreaLeft.setBorder(border);
 		textAreaLeft.setEditable(false);
 		textAreaLeft.setLineWrap(false);
 		for (int i = 0; i < files.length; i++)
@@ -138,8 +134,6 @@ public class SortingScript {
 	}
 
 	private void assembleTextAreaRight(){
-		Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
-		textAreaRight.setBorder(border);
 		textAreaRight.setEditable(false);
 		textAreaRight.setLineWrap(true);
 	}
