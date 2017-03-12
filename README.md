@@ -17,11 +17,11 @@ For Windows users! I have noticed that Arabic text comes up as gibberish within 
 Contact Email: amotto@fordham.edu
 
 # Known major issues
-- GUI elements seem to break on high DPI screens (tested on Surface Pro 3)
+- GUI elements break whenm display is set to resolution below the default. [NO WORKAROUND AVAILABLE]
 
 # Known minor issues
 - First file in the list is not highlighted unless you go forwards and then backwards
-- The left text area has a minor graphical bug when closed and repainted.
+- Left text area extends a little too far to the right on high dpi screens (tested on Surface Pro 3)
 - Error dialog for invalid directories sometimes appears more than once.
 
 # Workarounds
