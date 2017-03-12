@@ -26,6 +26,14 @@ Email me with any questions!
 
 Contact Email: amotto@fordham.edu
 
+# How to use
+
+- When the application opens, select the folder containing your text files on the left using the file browser
+- If a valid folder is selected, a list of files will appear on the left, and the contents of the first file will appear on the right
+- The arrow buttons can be used to step back and forth through the files. The current file is highlighted in red.
+- To set the benign and extremist directory paths, click on their respective buttons first and follow the prompts. If you already have a file open, the file will be moved immediately after you set the directory. If you don't want to move files just yet, set these paths before you open a file.
+- Clicking the back button brings you back to the file browser and clears the text area on the right
+
 # Known major issues
 - GUI elements break when display is set to resolution below the default. [NO WORKAROUND AVAILABLE]
 
