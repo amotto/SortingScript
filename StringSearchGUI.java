@@ -7,7 +7,6 @@ import javax.swing.border.Border;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-
 public class StringSearchGUI {
 
 	private JFrame primaryWindow = new JFrame("SortingScript");
@@ -40,7 +39,6 @@ public class StringSearchGUI {
 
 
 	public StringSearchGUI() {
-		
 		Dimension fileBrowserDimension = new Dimension(600, 600);
 
 		try {
@@ -58,37 +56,15 @@ public class StringSearchGUI {
 		primaryWindow.add(rightPanel, BorderLayout.EAST);
 		primaryWindow.setResizable(false);
 		primaryWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 	}
 
 
 	private void init() {
-		
-		//primaryWindow.setLayout(new BorderLayout());
 		primaryWindow.pack();
-		//primaryWindow.setSize(new Dimension(1400,1000));
 		primaryWindow.setVisible(true);
-
 	}
-
-/*
-	private void setDirectoriesDialog() {
-
-		JPanel dialogPanel = new JPanel(new BorderLayout());
-		JPanel dialogPanel = new JPanel();
-		JPanel dialogPanel = new JPanel();
-		JLabel benignLabel = new JLabel("Set benign path");
-		JTextField benignPath = new JTextField();
-		JLabel benignLabel = new JLabel("Set extremist path");
-		JTextField extremistPath = new JTextField();
-		
-	
-
-	}
-*/
 
 	private void setUpFileBrowser() {
-
 		javax.swing.filechooser.FileNameExtensionFilter filter = new javax.swing.filechooser.FileNameExtensionFilter("Text File", "txt");
 		fileBrowser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileBrowser.setFileFilter(filter);
@@ -107,9 +83,7 @@ public class StringSearchGUI {
 					}
 			}
     		});
-
 	}
-	
 
 	private void assembleLeftPanelFileBrowser() {
 		leftPanel.removeAll();
@@ -129,11 +103,9 @@ public class StringSearchGUI {
 		leftPanel.add(leftPanelSub2, BorderLayout.SOUTH);
 		leftPanel.validate();
 		leftPanel.repaint();
-		
 	}
 
 	private void assembleTextAreaLeft(){
-		
 		Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
 		textAreaLeft.setText("");
 		textAreaLeft.setBorder(border);
@@ -142,12 +114,9 @@ public class StringSearchGUI {
 		for (int i = 0; i < files.length; i++)
 			textAreaLeft.append(files[i].toString() + "\n");
 		textAreaLeft.setCaretPosition(0);
-
-
 	}
 
 	private void highlightLeftAreaLines(){
-
 		try {
 			textAreaLeft.getHighlighter().removeAllHighlights();
 			int start = textAreaLeft.getLineStartOffset(counter);
@@ -155,7 +124,6 @@ public class StringSearchGUI {
 			textAreaLeft.getHighlighter().addHighlight(start, end, highlighter);
 		}
 		catch (BadLocationException b) {System.out.println("Could not highlight");}
-
 	}
 
 	private void assembleRightPanel() {
@@ -168,24 +136,16 @@ public class StringSearchGUI {
 		rightPanelSub2.add(extremism);
 		rightPanel.add(rightPanelSub1, BorderLayout.NORTH);
 		rightPanel.add(rightPanelSub2, BorderLayout.SOUTH);
-
 	}
 
 	private void assembleTextAreaRight(){
-		
 		Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
 		textAreaRight.setBorder(border);
 		textAreaRight.setEditable(false);
 		textAreaRight.setLineWrap(true);
-
-
 	}
 
-
-
-
 	private void setButtons(){
-
 		forward.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (directorySelected == true){
@@ -215,7 +175,6 @@ public class StringSearchGUI {
 			public void actionPerformed(ActionEvent e) {
 				if (benignDirectorySet == false){
 					benignInput = JOptionPane.showInputDialog("Enter a path to benign folder");
-					//if (!(benignInput.equals(null)))
 					if (benignInput != null)
 						benignDirectorySet = true;
 				}
@@ -224,7 +183,6 @@ public class StringSearchGUI {
 					try {
 						Path target = Paths.get(files[counter].getCanonicalPath());
 						benignDirectory = Paths.get(benignInput + target.getFileName().toString());
-						//System.out.println("Copying to " + benignInput + target.getFileName().toString());
 						Files.copy(target, benignDirectory, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
 					}
@@ -248,7 +206,6 @@ public class StringSearchGUI {
 			public void actionPerformed(ActionEvent e) {
 				if (extremistDirectorySet == false){
 					extremistInput = JOptionPane.showInputDialog("Enter a path to extremist folder");
-					//if (!(extremistInput.equals(null)))
 					if (extremistInput != null)
 						extremistDirectorySet = true;
 				}
@@ -257,7 +214,6 @@ public class StringSearchGUI {
 					try {
 						Path target = Paths.get(files[counter].getCanonicalPath());
 						extremistDirectory = Paths.get(extremistInput + target.getFileName().toString());
-						//System.out.println("Copying to " + extremistInput + target.getFileName().toString());
 						Files.copy(target, extremistDirectory, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
 					}
@@ -284,9 +240,6 @@ public class StringSearchGUI {
 				textAreaRight.setText("");
 			}
     		});
-
-
-
 	}
 
 	private boolean readFile(File textFile){
@@ -297,14 +250,11 @@ public class StringSearchGUI {
 
 		if (textFile.isFile() && fileTypeIsText > 0){
 			try {
-				//System.out.println("Attempting to read file...");
 				writeToTextAreaRight(files[counter]);
-	
 			}
 			catch (NullPointerException n){
 				System.out.println("NullPointerException");
 			}
-
 			return true;
 		}
 			
@@ -312,19 +262,13 @@ public class StringSearchGUI {
 			JOptionPane.showMessageDialog(primaryWindow, "Selected item not a file");
 			return false;
 		}
-
-
 	}
 
 	private void writeToTextAreaRight(File textFile){
-
-		
 		try {
-			//System.out.println("Writing " + textFile + " to text area...");
 			FileReader fr = new FileReader(textFile);
 			BufferedReader br = new BufferedReader(fr);
 			textAreaRight.setText("");
-			//System.out.println("TextAreaRight is reading...");
 			textAreaRight.read(br, null);
 			highlightLeftAreaLines();
 			br.close();
@@ -333,17 +277,10 @@ public class StringSearchGUI {
 		catch (Exception e2) {
 			JOptionPane.showMessageDialog(primaryWindow, "File could not be opened");
 		}
-
 	}
 
 	public static void main (String [] args){
-
 		StringSearchGUI s = new StringSearchGUI();
 		s.init();
-
-
 	}
-
-
-
 }
