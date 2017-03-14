@@ -11,12 +11,13 @@ public class SortingScript {
 
 	private JFrame primaryWindow = new JFrame("SortingScript");
 	private JPanel leftPanel = new JPanel(new BorderLayout());
-	private JPanel leftPanelSub1 = new JPanel();
+	//private JPanel leftPanelSub1 = new JPanel();
 	private JPanel leftPanelSub2 = new JPanel();
 	private JPanel rightPanel = new JPanel(new BorderLayout());
-	private JPanel rightPanelSub1 = new JPanel();
+	//private JPanel rightPanelSub1 = new JPanel();
 	private JPanel rightPanelSub2 = new JPanel();
 	private JButton benign = new JButton("Benign");
+	private JButton empty = new JButton("Empty");
 	private JButton extremism = new JButton("Extremism");
 	private JButton forward = new JButton(">");
 	private JButton backward = new JButton("<");
@@ -29,11 +30,14 @@ public class SortingScript {
 	private boolean directorySelected = false;
 	private boolean extremistDirectorySet = false;
 	private boolean benignDirectorySet = false;
+	private boolean emptyDirectorySet = false;
 	private File path;
 	private	File [] files;
 	private Path benignDirectory;
+	private Path emptyDirectory;
 	private Path extremistDirectory;
 	private String benignInput;
+	private String emptyInput;
 	private String extremistInput;
 	private int counter = 0;
 
@@ -51,7 +55,7 @@ public class SortingScript {
 		assembleRightPanel();
 		setButtons();
 		primaryWindow.add(leftPanel, BorderLayout.WEST);
-		primaryWindow.add(rightPanel, BorderLayout.EAST);
+		primaryWindow.add(rightPanel, BorderLayout.CENTER);
 		primaryWindow.setResizable(true);
 		primaryWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -76,9 +80,6 @@ public class SortingScript {
 					directorySelected = true;
 					assembleLeftPanelTextArea();
 					readFile(files[counter]);
-					//boolean readFileSuccess = readFile(files[counter]);
-					//if (readFileSuccess)
-						
 				}
 			}
     		});
@@ -94,13 +95,13 @@ public class SortingScript {
 
 	private void assembleLeftPanelTextArea() {
 		leftPanel.removeAll();
-		leftPanelSub1.removeAll();
+		//leftPanelSub1.removeAll();
 		leftPanelSub2.removeAll();
 		assembleTextAreaLeft();
 		JScrollPane scrollPane = new JScrollPane(textAreaLeft);
-		leftPanelSub1.add(scrollPane);
+		//leftPanelSub1.add(scrollPane);
 		leftPanelSub2.add(back);
-		leftPanel.add(leftPanelSub1, BorderLayout.NORTH);
+		leftPanel.add(scrollPane, BorderLayout.CENTER);
 		leftPanel.add(leftPanelSub2, BorderLayout.SOUTH);
 		leftPanel.validate();
 		leftPanel.repaint();
@@ -128,16 +129,17 @@ public class SortingScript {
 
 	private void assembleRightPanel() {
 		rightPanel.removeAll();
-		rightPanelSub1.removeAll();
+		//rightPanelSub1.removeAll();
 		rightPanelSub2.removeAll();
 		assembleTextAreaRight();
 		JScrollPane scrollPane = new JScrollPane(textAreaRight);
-		rightPanelSub1.add(scrollPane);
+		//rightPanelSub1.add(scrollPane);
 		rightPanelSub2.add(backward);
 		rightPanelSub2.add(forward);
 		rightPanelSub2.add(benign);
+		rightPanelSub2.add(empty);
 		rightPanelSub2.add(extremism);
-		rightPanel.add(rightPanelSub1, BorderLayout.NORTH);
+		rightPanel.add(scrollPane, BorderLayout.CENTER);
 		rightPanel.add(rightPanelSub2, BorderLayout.SOUTH);
 	}
 
@@ -190,6 +192,37 @@ public class SortingScript {
 					catch (IOException ioe) {
 						JOptionPane.showMessageDialog(primaryWindow, "Benign directory does not exist. Click benign to reset.");
 						benignDirectorySet = false;
+					}
+					counter++;
+					try {
+						readFile(files[counter]);
+					}
+					catch (ArrayIndexOutOfBoundsException a) {
+						JOptionPane.showMessageDialog(primaryWindow, "End of directory");
+					}
+				}
+
+			}
+    		});
+
+		empty.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (emptyDirectorySet == false){
+					emptyInput = JOptionPane.showInputDialog("Enter a path to empty folder");
+					if (emptyInput != null)
+						emptyDirectorySet = true;
+				}
+				
+				if (directorySelected && emptyDirectorySet){
+					try {
+						Path target = Paths.get(files[counter].getCanonicalPath());
+						emptyDirectory = Paths.get(emptyInput + target.getFileName().toString());
+						Files.copy(target, emptyDirectory, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+
+					}
+					catch (IOException ioe) {
+						JOptionPane.showMessageDialog(primaryWindow, "Empty directory does not exist. Click empty to reset.");
+						emptyDirectorySet = false;
 					}
 					counter++;
 					try {
