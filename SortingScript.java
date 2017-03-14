@@ -74,9 +74,11 @@ public class SortingScript {
 					path = fileBrowser.getSelectedFile();
 					files = path.listFiles();
 					directorySelected = true;
-					boolean readFileSuccess = readFile(files[counter]);
-					if (readFileSuccess)
-						assembleLeftPanelTextArea();
+					assembleLeftPanelTextArea();
+					readFile(files[counter]);
+					//boolean readFileSuccess = readFile(files[counter]);
+					//if (readFileSuccess)
+						
 				}
 			}
     		});
@@ -119,6 +121,7 @@ public class SortingScript {
 			int start = textAreaLeft.getLineStartOffset(counter);
 			int end = textAreaLeft.getLineEndOffset(counter);
 			textAreaLeft.getHighlighter().addHighlight(start, end, highlighter);
+			textAreaLeft.repaint();
 		}
 		catch (BadLocationException b) {System.out.println("Could not highlight");}
 	}
@@ -240,7 +243,7 @@ public class SortingScript {
     		});
 	}
 
-	private boolean readFile(File textFile){
+	private void readFile(File textFile){
 		int fileTypeIsText = -1;
 
 		try {fileTypeIsText = textFile.getCanonicalPath().indexOf(".txt");}
@@ -253,12 +256,20 @@ public class SortingScript {
 			catch (NullPointerException n){
 				System.out.println("NullPointerException");
 			}
-			return true;
+
 		}
 			
 		else {
-			JOptionPane.showMessageDialog(primaryWindow, "Selected item not a file");
-			return false;
+			//JOptionPane.showMessageDialog(primaryWindow, "Current item not a text file.");
+			try {
+				counter++;
+				readFile(files[counter]);
+			}
+			catch (ArrayIndexOutOfBoundsException a) {
+				JOptionPane.showMessageDialog(primaryWindow, "End of directory");
+				
+			};
+
 		}
 	}
 
