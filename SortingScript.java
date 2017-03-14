@@ -6,11 +6,13 @@ import java.awt.*;
 import javax.swing.border.Border;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
 
 public class SortingScript {
 
 	private JFrame primaryWindow = new JFrame("SortingScript");
 	private JPanel leftPanel = new JPanel(new BorderLayout());
+	private	JSplitPane splitPane;
 	//private JPanel leftPanelSub1 = new JPanel();
 	private JPanel leftPanelSub2 = new JPanel();
 	private JPanel rightPanel = new JPanel(new BorderLayout());
@@ -21,9 +23,11 @@ public class SortingScript {
 	private JButton extremism = new JButton("Extremism");
 	private JButton forward = new JButton(">");
 	private JButton backward = new JButton("<");
+	private JButton bigger = new JButton("+");
+	private JButton smaller = new JButton("-");
 	private JButton back = new JButton("Back");
-	private JTextArea textAreaRight = new JTextArea("", 49, 78);
-	private JTextArea textAreaLeft = new JTextArea("", 49, 45);
+	private JTextArea textAreaRight = new JTextArea("", 36, 49);
+	private JTextArea textAreaLeft = new JTextArea("", 25, 25);
 	private	JFileChooser fileBrowser = new JFileChooser();
 	private Highlighter.HighlightPainter highlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.RED);
 	private boolean goToNext = true;
@@ -50,12 +54,12 @@ public class SortingScript {
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(primaryWindow, "System look and feel could not be applied.");
 		}
-
+		
+		assembleSplitPane();
 		assembleLeftPanelFileBrowser();
 		assembleRightPanel();
 		setButtons();
-		primaryWindow.add(leftPanel, BorderLayout.WEST);
-		primaryWindow.add(rightPanel, BorderLayout.CENTER);
+		primaryWindow.add(splitPane, BorderLayout.CENTER);
 		primaryWindow.setResizable(true);
 		primaryWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -64,6 +68,12 @@ public class SortingScript {
 	private void init() {
 		primaryWindow.pack();
 		primaryWindow.setVisible(true);
+	}
+
+	private void assembleSplitPane() {
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
+		splitPane.setContinuousLayout(true);
+		splitPane.setDividerSize(2);
 	}
 
 	private void setUpFileBrowser() {
@@ -89,6 +99,7 @@ public class SortingScript {
 		leftPanel.removeAll();
 		setUpFileBrowser();
 		leftPanel.add(fileBrowser);
+		//leftPanel.setBorder(BorderFactory.createEmptyBorder(35,10,35,10));
 		leftPanel.validate();
 		leftPanel.repaint();
 	}
@@ -103,6 +114,7 @@ public class SortingScript {
 		leftPanelSub2.add(back);
 		leftPanel.add(scrollPane, BorderLayout.CENTER);
 		leftPanel.add(leftPanelSub2, BorderLayout.SOUTH);
+		leftPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		leftPanel.validate();
 		leftPanel.repaint();
 	}
@@ -111,6 +123,7 @@ public class SortingScript {
 		textAreaLeft.setText("");
 		textAreaLeft.setEditable(false);
 		textAreaLeft.setLineWrap(false);
+		textAreaLeft.setFont(textAreaLeft.getFont().deriveFont(14f));
 		for (int i = 0; i < files.length; i++)
 			textAreaLeft.append(files[i].toString() + "\n");
 		textAreaLeft.setCaretPosition(0);
@@ -134,6 +147,8 @@ public class SortingScript {
 		assembleTextAreaRight();
 		JScrollPane scrollPane = new JScrollPane(textAreaRight);
 		//rightPanelSub1.add(scrollPane);
+		rightPanelSub2.add(smaller);
+		rightPanelSub2.add(bigger);
 		rightPanelSub2.add(backward);
 		rightPanelSub2.add(forward);
 		rightPanelSub2.add(benign);
@@ -141,14 +156,28 @@ public class SortingScript {
 		rightPanelSub2.add(extremism);
 		rightPanel.add(scrollPane, BorderLayout.CENTER);
 		rightPanel.add(rightPanelSub2, BorderLayout.SOUTH);
+		rightPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 	}
 
 	private void assembleTextAreaRight(){
 		textAreaRight.setEditable(false);
 		textAreaRight.setLineWrap(true);
+		textAreaRight.setFont(textAreaRight.getFont().deriveFont(18f));
 	}
 
 	private void setButtons(){
+		smaller.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textAreaRight.setFont(textAreaRight.getFont().deriveFont(textAreaRight.getFont().getSize() - 1.0f));
+			}
+    		});
+
+		bigger.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textAreaRight.setFont(textAreaRight.getFont().deriveFont(textAreaRight.getFont().getSize() + 1.0f));
+			}
+    		});
+
 		forward.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (directorySelected == true){
@@ -270,6 +299,7 @@ public class SortingScript {
 		back.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				assembleLeftPanelFileBrowser();
+				splitPane.resetToPreferredSizes();
 				counter = 0;
 				textAreaRight.setText("");
 			}
