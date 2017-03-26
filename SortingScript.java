@@ -20,12 +20,16 @@ public class SortingScript {
 	private JPanel rightPanelSub2 = new JPanel();
 	private JButton benign = new JButton("Benign");
 	private JButton empty = new JButton("Empty");
+	private JButton unknown = new JButton("Unknown");
 	private JButton extremism = new JButton("Extremism");
 	private JButton forward = new JButton(">");
 	private JButton backward = new JButton("<");
 	private JButton bigger = new JButton("+");
 	private JButton smaller = new JButton("-");
 	private JButton back = new JButton("Back");
+	private JButton goToButton = new JButton("Go");
+	private JTextField goToFile = new JTextField(12);
+	private JLabel goToLabel = new JLabel("Go to file: ");
 	private JTextArea textAreaRight = new JTextArea("", 36, 49);
 	private JTextArea textAreaLeft = new JTextArea("", 25, 25);
 	private	JFileChooser fileBrowser = new JFileChooser();
@@ -33,17 +37,22 @@ public class SortingScript {
 	private boolean goToNext = true;
 	private boolean directorySelected = false;
 	private boolean extremistDirectorySet = false;
+	private boolean unknownDirectorySet = false;
 	private boolean benignDirectorySet = false;
 	private boolean emptyDirectorySet = false;
 	private File path;
 	private	File [] files;
 	private Path benignDirectory;
 	private Path emptyDirectory;
+	private Path unknownDirectory;
 	private Path extremistDirectory;
 	private String benignInput;
 	private String emptyInput;
+	private String unknownInput;
 	private String extremistInput;
 	private int counter = 0;
+	private int scrollCounter = 5;
+
 
 
 	public SortingScript() {
@@ -55,10 +64,11 @@ public class SortingScript {
 			JOptionPane.showMessageDialog(primaryWindow, "System look and feel could not be applied.");
 		}
 		
+		setUpFileBrowser();
 		assembleSplitPane();
 		assembleLeftPanelFileBrowser();
 		assembleRightPanel();
-		setButtons();
+		setActions();
 		primaryWindow.add(splitPane, BorderLayout.CENTER);
 		primaryWindow.setResizable(true);
 		primaryWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -85,11 +95,20 @@ public class SortingScript {
 		fileBrowser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (e.getActionCommand().equals("ApproveSelection")){
+					System.out.println("File browser got an approve selection command");
 					path = fileBrowser.getSelectedFile();
 					files = path.listFiles();
-					directorySelected = true;
-					assembleLeftPanelTextArea();
-					readFile(files[counter]);
+					if (checkDirectory()){
+						directorySelected = true;
+						assembleLeftPanelTextArea();
+						readFile(files[counter], true);
+					}
+					else{
+						if (directorySelected)
+							directorySelected = false;
+						JOptionPane.showMessageDialog(primaryWindow, "Directory does not contain text files");
+					}
+
 				}
 			}
     		});
@@ -97,7 +116,7 @@ public class SortingScript {
 
 	private void assembleLeftPanelFileBrowser() {
 		leftPanel.removeAll();
-		setUpFileBrowser();
+		//setUpFileBrowser();
 		leftPanel.add(fileBrowser);
 		//leftPanel.setBorder(BorderFactory.createEmptyBorder(35,10,35,10));
 		leftPanel.validate();
@@ -111,6 +130,9 @@ public class SortingScript {
 		assembleTextAreaLeft();
 		JScrollPane scrollPane = new JScrollPane(textAreaLeft);
 		//leftPanelSub1.add(scrollPane);
+		leftPanelSub2.add(goToLabel);
+		leftPanelSub2.add(goToFile);
+		leftPanelSub2.add(goToButton);
 		leftPanelSub2.add(back);
 		leftPanel.add(scrollPane, BorderLayout.CENTER);
 		leftPanel.add(leftPanelSub2, BorderLayout.SOUTH);
@@ -135,6 +157,16 @@ public class SortingScript {
 			int start = textAreaLeft.getLineStartOffset(counter);
 			int end = textAreaLeft.getLineEndOffset(counter);
 			textAreaLeft.getHighlighter().addHighlight(start, end, highlighter);
+			JViewport textAreaViewport = (JViewport)textAreaLeft.getParent();
+			JScrollPane textAreaScrollPane = (JScrollPane)textAreaViewport.getParent();
+			if (counter - scrollCounter > 1){
+				textAreaScrollPane.getVerticalScrollBar().setValue(textAreaScrollPane.getVerticalScrollBar().getValue() + 17);
+				scrollCounter++;
+			}
+			else if (counter - scrollCounter < -5){
+				textAreaScrollPane.getVerticalScrollBar().setValue(textAreaScrollPane.getVerticalScrollBar().getValue() - 17);
+				scrollCounter--;
+			}
 			textAreaLeft.repaint();
 		}
 		catch (BadLocationException b) {System.out.println("Could not highlight");}
@@ -153,6 +185,7 @@ public class SortingScript {
 		rightPanelSub2.add(forward);
 		rightPanelSub2.add(benign);
 		rightPanelSub2.add(empty);
+		rightPanelSub2.add(unknown);
 		rightPanelSub2.add(extremism);
 		rightPanel.add(scrollPane, BorderLayout.CENTER);
 		rightPanel.add(rightPanelSub2, BorderLayout.SOUTH);
@@ -165,7 +198,7 @@ public class SortingScript {
 		textAreaRight.setFont(textAreaRight.getFont().deriveFont(18f));
 	}
 
-	private void setButtons(){
+	private void setActions(){
 		smaller.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textAreaRight.setFont(textAreaRight.getFont().deriveFont(textAreaRight.getFont().getSize() - 1.0f));
@@ -183,7 +216,7 @@ public class SortingScript {
 				if (directorySelected == true){
 					counter++;
 					try {
-						readFile(files[counter]);
+						readFile(files[counter], true);
 					}
 					catch (ArrayIndexOutOfBoundsException a) {
 						JOptionPane.showMessageDialog(primaryWindow, "End of directory");
@@ -197,7 +230,7 @@ public class SortingScript {
 				if (directorySelected == true){
 					if (counter > 0)
 						counter--;
-					readFile(files[counter]);
+					readFile(files[counter], false);
 				}
 			}
     		});
@@ -207,8 +240,16 @@ public class SortingScript {
 			public void actionPerformed(ActionEvent e) {
 				if (benignDirectorySet == false){
 					benignInput = JOptionPane.showInputDialog("Enter a path to benign folder");
-					if (benignInput != null)
+					if (benignInput != null){
+						System.out.println(benignInput.substring(benignInput.length() - 1));
+						if (!((benignInput.substring(benignInput.length() - 1).equals("/")) || (benignInput.substring(benignInput.length() - 1).equals("\\")))){
+							System.out.println("Doesn't contain slash");		
+							benignInput = benignInput + "/";
+						}
+						System.out.println(benignInput);
 						benignDirectorySet = true;
+					}
+						
 				}
 				
 				if (directorySelected && benignDirectorySet){
@@ -224,7 +265,7 @@ public class SortingScript {
 					}
 					counter++;
 					try {
-						readFile(files[counter]);
+						readFile(files[counter], true);
 					}
 					catch (ArrayIndexOutOfBoundsException a) {
 						JOptionPane.showMessageDialog(primaryWindow, "End of directory");
@@ -255,7 +296,7 @@ public class SortingScript {
 					}
 					counter++;
 					try {
-						readFile(files[counter]);
+						readFile(files[counter], true);
 					}
 					catch (ArrayIndexOutOfBoundsException a) {
 						JOptionPane.showMessageDialog(primaryWindow, "End of directory");
@@ -264,6 +305,38 @@ public class SortingScript {
 
 			}
     		});
+		
+		unknown.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (unknownDirectorySet == false){
+					unknownInput = JOptionPane.showInputDialog("Enter a path to unknown folder");
+					if (unknownInput != null)
+						unknownDirectorySet = true;
+				}
+				
+				if (directorySelected && unknownDirectorySet){
+					try {
+						Path target = Paths.get(files[counter].getCanonicalPath());
+						unknownDirectory = Paths.get(unknownInput + target.getFileName().toString());
+						Files.copy(target, unknownDirectory, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+
+					}
+					catch (IOException ioe) {
+						JOptionPane.showMessageDialog(primaryWindow, "unknown directory does not exist. Click unknown to reset.");
+						emptyDirectorySet = false;
+					}
+					counter++;
+					try {
+						readFile(files[counter], true);
+					}
+					catch (ArrayIndexOutOfBoundsException a) {
+						JOptionPane.showMessageDialog(primaryWindow, "End of directory");
+					}
+				}
+
+			}
+    		});
+
 
 		extremism.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -286,7 +359,7 @@ public class SortingScript {
 					}
 					counter++;
 					try {
-						readFile(files[counter]);
+						readFile(files[counter], true);
 					}
 					catch (ArrayIndexOutOfBoundsException a) {
 						JOptionPane.showMessageDialog(primaryWindow, "End of directory");
@@ -304,9 +377,33 @@ public class SortingScript {
 				textAreaRight.setText("");
 			}
     		});
+
+		Action jumpingToFile = new AbstractAction()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				jumpToFile(goToFile.getText());
+			}
+		};
+
+		goToButton.addActionListener(jumpingToFile);
+
+		goToFile.addActionListener(jumpingToFile);
 	}
 
-	private void readFile(File textFile){
+	private boolean checkDirectory(){
+
+		for (int i = 0; i < files.length; i++){
+			if (files[i].getPath().indexOf(".txt") > 0)
+				return true;
+		}
+
+		return false;
+
+	}
+
+	private void readFile(File textFile, boolean forward){
 		int fileTypeIsText = -1;
 
 		try {fileTypeIsText = textFile.getCanonicalPath().indexOf(".txt");}
@@ -325,15 +422,46 @@ public class SortingScript {
 		else {
 			//JOptionPane.showMessageDialog(primaryWindow, "Current item not a text file.");
 			try {
-				counter++;
-				readFile(files[counter]);
+				if (forward){
+					counter++;
+					readFile(files[counter], true);
+				}
+				else{
+					if (counter > 0){
+						counter--;
+						readFile(files[counter], false);
+					}
+					else{
+						counter++;
+						readFile(files[counter], true);
+					}
+				}
 			}
 			catch (ArrayIndexOutOfBoundsException a) {
 				JOptionPane.showMessageDialog(primaryWindow, "End of directory");
 				
-			};
+			}
 
 		}
+	}
+
+	private void jumpToFile(String fileChoice){
+		int i = 0;
+		boolean fileFound = false;
+		while (fileFound == false && i < files.length){
+			if (files[i].getPath().indexOf(fileChoice) > 0)
+				fileFound = true;
+			else
+				i++;
+		}
+		if (fileFound){		
+			counter = i;
+			if (counter > 1)
+				scrollCounter = counter - 2;		
+			readFile(files[counter], true);
+		}
+		else
+			JOptionPane.showMessageDialog(primaryWindow, "File not found");
 	}
 
 	private void writeToTextAreaRight(File textFile){
