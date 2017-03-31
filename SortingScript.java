@@ -7,6 +7,9 @@ import javax.swing.border.Border;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 
 public class SortingScript {
 
@@ -18,6 +21,7 @@ public class SortingScript {
 	private JPanel rightPanel = new JPanel(new BorderLayout());
 	//private JPanel rightPanelSub1 = new JPanel();
 	private JPanel rightPanelSub2 = new JPanel();
+	private JButton copyToClipboard = new JButton("Copy to clipboard");
 	private JButton benign = new JButton("Benign");
 	private JButton unknown = new JButton("Unknown");
 	private JButton extremism = new JButton("Extremism");
@@ -202,6 +206,7 @@ public class SortingScript {
 		benign.setBackground(Color.GREEN);
 		unknown.setBackground(Color.ORANGE);
 		extremism.setBackground(Color.RED);
+		rightPanelSub2.add(copyToClipboard);
 		rightPanelSub2.add(smaller);
 		rightPanelSub2.add(bigger);
 		rightPanelSub2.add(backward);
@@ -253,7 +258,7 @@ public class SortingScript {
 			emptyDirectorySet = true;
 
 		if (!unknownDirectory.toFile().exists()) {
-			JOptionPane.showMessageDialog(null, "No empty text folder. Making one.");
+			JOptionPane.showMessageDialog(null, "No unknown text folder. Making one.");
 			unknownDirectory.toFile().mkdir();
 			unknownDirectorySet = true;
 		}
@@ -273,17 +278,25 @@ public class SortingScript {
 
 	}
 	private void setActions(){
+		copyToClipboard.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				StringSelection selection = new StringSelection(textAreaRight.getText());
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(selection, selection);
+			}
+    	});
+		
 		smaller.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textAreaRight.setFont(textAreaRight.getFont().deriveFont(textAreaRight.getFont().getSize() - 1.0f));
 			}
-    		});
+    	});
 
 		bigger.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textAreaRight.setFont(textAreaRight.getFont().deriveFont(textAreaRight.getFont().getSize() + 1.0f));
 			}
-    		});
+    	});
 
 		forward.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -297,7 +310,7 @@ public class SortingScript {
 					}
 				}
 			}
-    		});
+    	});
 
 		backward.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -307,7 +320,7 @@ public class SortingScript {
 					readFile(files[counter], false);
 				}
 			}
-    		});
+    	});
 
 
 
@@ -333,7 +346,7 @@ public class SortingScript {
 				}
 
 			}
-    		});
+    	});
 
 		unknown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -358,7 +371,7 @@ public class SortingScript {
 				}
 
 			}
-    		});
+    	});
 
 
 		extremism.addActionListener(new ActionListener() {
@@ -383,7 +396,7 @@ public class SortingScript {
 
 				}
 			}
-    		});
+    	});
 
 		back.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -396,7 +409,7 @@ public class SortingScript {
 				unknownDirectorySet = false;
 				extremistDirectorySet = false;
 			}
-    		});
+    	});
 
 		Action jumpingToFile = new AbstractAction()
 		{
