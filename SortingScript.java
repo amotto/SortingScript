@@ -443,10 +443,13 @@ public class SortingScript {
 			FileReader fr = new FileReader(textFile);
 			BufferedReader br = new BufferedReader(fr);
 			if (br.readLine() == null){
+				br.close();
+				fr.close();
 				moveToEmptyDirectory();
 				wasEmpty = true;
 			}
 			br.close();
+			fr.close();
 		}
 
 		catch (Exception e){JOptionPane.showMessageDialog(primaryWindow, e.getMessage());}
@@ -539,6 +542,7 @@ public class SortingScript {
 			textAreaRight.read(br, null);
 			highlightLeftAreaLines();
 			br.close();
+			fr.close();
 		}
 		
 		catch (Exception e2) {
